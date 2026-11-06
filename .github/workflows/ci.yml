@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JavaScript syntax
+        run: for f in src/*.js popup/*.js; do node --check "$f"; done
+
+      - name: Check manifest
+        run: |
+          node -e '
+            const fs = require("fs");
+            const m = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            if (m.manifest_version !== 3) throw new Error("manifest_version must be 3");
+            if (!/^\d+(\.\d+){0,3}$/.test(m.version)) throw new Error("bad version " + m.version);
+            const files = [
+              ...Object.values(m.icons || {}),
+              ...Object.values((m.action && m.action.default_icon) || {}),
+              m.action && m.action.default_popup,
+              m.background && m.background.service_worker,
+              ...(m.content_scripts || []).flatMap(c => [...(c.js || []), ...(c.css || [])]),
+            ].filter(Boolean);
+            for (const f of files) if (!fs.existsSync(f)) throw new Error("missing file " + f);
+            console.log("manifest ok, version " + m.version);
+          '
+
+      - name: Check tag matches manifest version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest version $version"
+            exit 1
+          fi
+
+      - name: Run pattern tests
+        run: node tests/patterns.test.js
+
+      - name: Build store zip
+        id: zip
+        run: echo "path=$(scripts/package.sh)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aws-cloak-zip
+          path: ${{ steps.zip.outputs.path }}
+
+      - name: Attach zip to a GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "${{ steps.zip.outputs.path }}" --generate-notes
