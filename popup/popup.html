@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AWS Cloak</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../icons/icon32.png" alt="" width="24" height="24">
+    <h1>AWS Cloak</h1>
+  </header>
+
+  <label class="row main">
+    <span>
+      <strong>Blur sensitive info</strong>
+      <small id="status">On for AWS console pages</small>
+    </span>
+    <input type="checkbox" id="enabled" class="switch">
+  </label>
+
+  <section id="controls">
+    <button id="pick" class="primary" type="button">Pick items to hide</button>
+    <p id="pickInfo" class="hint"></p>
+    <div class="buttons">
+      <button id="clearPage" type="button">Clear picks on this page</button>
+      <button id="clearAll" type="button">Clear all picks</button>
+    </div>
+
+    <h2>Options</h2>
+    <label class="row">
+      <span>
+        Strict mode
+        <small>Also blur any word that mixes letters and numbers</small>
+      </span>
+      <input type="checkbox" id="strict" class="switch">
+    </label>
+    <label class="row">
+      <span>
+        Mask tab titles
+        <small>Replace IDs in the tab title with dots</small>
+      </span>
+      <input type="checkbox" id="maskTitles" class="switch">
+    </label>
+    <label class="row slider">
+      <span>Blur strength <small id="blurValue"></small></span>
+      <input type="range" id="blurPx" min="3" max="14" step="1">
+    </label>
+  </section>
+
+  <footer>
+    <p id="shortcuts" class="hint"></p>
+    <a href="#" id="editShortcuts">Change shortcuts</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
