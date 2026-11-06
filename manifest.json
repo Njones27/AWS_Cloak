@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "AWS Cloak",
+  "version": "1.0.0",
+  "description": "Blurs account IDs, ARNs, resource IDs, keys, IPs, URLs and your account alias in the AWS console so you can record walkthroughs safely.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "AWS Cloak",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.aws.amazon.com/*",
+        "https://*.awsapps.com/*",
+        "https://*.app.aws/*",
+        "https://*.amazonaws-us-gov.com/*",
+        "https://*.amazonaws.cn/*"
+      ],
+      "js": ["src/patterns.js", "src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "commands": {
+    "toggle-cloak": {
+      "suggested_key": { "default": "Alt+Shift+B", "mac": "Alt+Shift+B" },
+      "description": "Turn blurring on or off"
+    },
+    "start-picker": {
+      "suggested_key": { "default": "Alt+Shift+P", "mac": "Alt+Shift+P" },
+      "description": "Pick items on the page to hide"
+    }
+  }
+}
