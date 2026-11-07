@@ -4,6 +4,10 @@ AWS Cloak is a Chrome extension that blurs sensitive information in the AWS cons
 
 It watches every console page as it loads and blurs account IDs, ARNs, resource IDs, access keys, IP addresses, URLs and your account alias. Anything it misses can be hidden with a hover and a click, the same way Safari's Hide Distracting Items works.
 
+![The IAM Identity Center settings page with AWS Cloak turned on. The account alias, managing instance, instance ARN, account ID and organization ID are blurred while the rest of the page stays readable.](docs/identity-center-blurred.png)
+
+*AWS Cloak running on the real IAM Identity Center settings page. The account alias, instance ID, instance ARN, account ID and organization ID are all blurred, and everything else stays readable.*
+
 ## Install it
 
 Chrome lets you load an extension straight from a folder, which is called loading it unpacked.
