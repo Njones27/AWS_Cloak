@@ -97,3 +97,7 @@ node tests/e2e.js
 ## License
 
 GPL 3.0, see `LICENSE`.
+
+## Releasing
+
+CI runs the pattern tests and builds the store zip on every pull request. To build the zip yourself, run `scripts/package.sh` and it lands in `dist/`. The steps for publishing a new version and the text for the Chrome Web Store listing are in [store/listing.md](store/listing.md). The privacy policy is in [PRIVACY.md](PRIVACY.md).
